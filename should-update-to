@@ -6,8 +6,8 @@ if [[ $1 = "" ]]; then
   exit 1;
 fi
 
-LATEST=$(./get-latest.sh -q);
-DEPLOYED=$(./get-latest.sh $1 -q);
+LATEST=$(./get-latest -q);
+DEPLOYED=$(./get-latest $1 -q);
 
 if [[ $LATEST = "" ]]; then
   if [[ $LATEST = "" ]]; then

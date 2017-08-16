@@ -28,7 +28,7 @@ examples:
 }
 
 get_current_version () {
-  CURRENT_VERSION=$(./get-latest.sh -q);
+  CURRENT_VERSION=$(./get-latest -q);
   if [[ $? != 0 ]]; then
     printf "
 ERROR: could not find a git tag that resembles a semver version (x.y.z).
