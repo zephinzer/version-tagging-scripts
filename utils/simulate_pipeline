@@ -16,11 +16,11 @@ if [[ $DEV_EXISTS = 0 ]] |
   exit 1;
 fi;
 
-mkdir -p test/data
+mkdir -p _data
 
 git checkout _dev;
-echo 'prod' > ./test/data/prod.flag;
-git add ./test/data/prod.flag;
+echo 'prod' > ./_data/prod.flag;
+git add ./_data/prod.flag;
 git commit -m 'prod';
 git checkout _ci;
 git rebase _dev;
@@ -34,8 +34,8 @@ git checkout _production;
 git rebase _staging;
 
 git checkout _dev;
-echo 'staging' > ./test/data/staging.flag;
-git add ./test/data/staging.flag;
+echo 'staging' > ./_data/staging.flag;
+git add ./_data/staging.flag;
 git commit -m 'staging';
 git checkout _ci;
 git rebase _dev;
@@ -47,8 +47,8 @@ git checkout _staging;
 git rebase _uat;
 
 git checkout _dev;
-echo 'uat' > ./test/data/uat.flag;
-git add ./test/data/uat.flag;
+echo 'uat' > ./_data/uat.flag;
+git add ./_data/uat.flag;
 git commit -m 'uat';
 git checkout _ci;
 git rebase _dev;
@@ -58,8 +58,8 @@ git checkout _uat;
 git rebase _qa;
 
 git checkout _dev;
-echo 'qa' > ./test/data/qa.flag;
-git add ./test/data/qa.flag;
+echo 'qa' > ./_data/qa.flag;
+git add ./_data/qa.flag;
 git commit -m 'qa';
 git checkout _ci;
 git rebase _dev;
@@ -67,13 +67,13 @@ git checkout _qa;
 git rebase _ci;
 
 git checkout _dev;
-echo 'ci' > ./test/data/ci.flag;
-git add ./test/data/ci.flag;
+echo 'ci' > ./_data/ci.flag;
+git add ./_data/ci.flag;
 git commit -m 'ci';
 git checkout _ci;
 git rebase _dev;
 
 git checkout _dev;
-echo 'dev' > ./test/data/dev.flag;
-git add ./test/data/dev.flag;
+echo 'dev' > ./_data/dev.flag;
+git add ./_data/dev.flag;
 git commit -m 'dev';
