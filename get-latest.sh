@@ -8,6 +8,7 @@ the major version, y is the minor version and z is the patch version. exits with
 1 if no version is found, exists with code 0 if version is found.
 
 options:
+\t-m --merged         : get only tags that apply to the current branch
 \t-q --quiet          : suppresses debug prints
 \t-h --help           : prints this text
 
@@ -28,7 +29,11 @@ if [[ $* == *-q* ]] || [[ $* == *--quiet* ]]; then exec 6>&1; exec > /dev/null; 
 VERSION_SELECTOR="^[0-9]+\.[0-9]+\.[0-9]+"
 printf "\nVERSION_SELECTOR: ${VERSION_SELECTOR}\n";
 [[ "$1" != "" ]] && [[ "$1" != "-q" ]] && VERSION_SELECTOR="${VERSION_SELECTOR}\-${1}";
-VERSION=$(git tag -l | egrep "${VERSION_SELECTOR}$" | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | tail -n 1);
+if [[ $* == *-m* ]] || [[ $* == *--merged* ]]; then
+  VERSION=$(git tag -l --merged | egrep "${VERSION_SELECTOR}$" | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | tail -n 1);
+else
+  VERSION=$(git tag -l | egrep "${VERSION_SELECTOR}$" | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | tail -n 1);
+fi;
 if [[ $VERSION = "" ]]; then
   printf "
 ERROR: could not find a git tag that resembles a semver version (x.y.z).
