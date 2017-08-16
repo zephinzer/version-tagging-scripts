@@ -1,39 +1,41 @@
 #!/bin/sh
 help () { printf "
-*******************
-get-next-version.sh
-*******************
+***********
+get-next.sh
+***********
 gets the next semver versioning of the current folder based on the version
 in the git tag list. version should be in format x.y.z where x is the major
 version, y is the minor version and z is the patch version.
-
-eg. to add a 1.0.3 tag, run 'git tag 1.0.3'
 
 options:
 \t-q --quiet          : suppresses debug prints
 \t-h --help           : prints this text
 
 usage:
-\t./get-next-version.sh <version_type> [...options]
+\t./get-next.sh <version_type> [...options]
 \t<version_type>:
 \t\tmajor: {major|maj|m1}
 \t\tminor: {minor|min|m2}
 \t\tpatch: {patch|ptc|p} (DEFAULT)
 
 examples:
-\t./get-next-version.sh maj : bumps the major version (1.0.0 > 2.0.0)
-\t./get-next-version.sh min : bumps the minor version (1.0.0 > 1.1.0)
-\t./get-next-version.sh patch : bumps the patch version (1.0.0 > 1.0.1)
-\t./get-next-version.sh -q : bumps the patch version (1.0.0 > 1.0.1) w/o output
+\t./get-next.sh maj : bumps the major version (1.0.0 > 2.0.0)
+\t./get-next.sh min : bumps the minor version (1.0.0 > 1.1.0)
+\t./get-next.sh patch : bumps the patch version (1.0.0 > 1.0.1)
+\t./get-next.sh -q : bumps the patch version (1.0.0 > 1.0.1) w/o output
 
 ";
 }
 
 get_current_version () {
-  CURRENT_VERSION=$(./get-latest.sh);
+  CURRENT_VERSION=$(./get-latest.sh -q);
   if [[ $? != 0 ]]; then
-    printf "ERROR: could not find a git tag that resembles a semver version (x.y.z).\n"
-    printf "Run './get-next-version.sh -h' for more info. Exiting with status code 1.\n\n";
+    printf "
+ERROR: could not find a git tag that resembles a semver version (x.y.z).
+\t> To add a 1.0.3 tag, run 'git tag 1.0.3'
+\t> Exiting with status code 1.
+
+";
     exit 1;
   fi;
   LATEST_MAJOR_VERSION=$(printf "$CURRENT_VERSION" | cut -d. -f1);

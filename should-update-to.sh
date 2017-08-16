@@ -2,21 +2,18 @@
 if [[ $1 = "" ]]; then
   printf "ERROR: Target environment NOT FOUND (specify it as an argument)\n";
   printf "eg. [./should-update-to.sh dev] for the dev environment\n"
-  printf "\nExiting with status code 1.\n"
+  printf "\n\t>Exiting with status code 1.\n"
   exit 1;
 fi
 
-LATEST=$(./get-latest.sh);
-DEPLOYED=$(./get-latest.sh $1);
+LATEST=$(./get-latest.sh -q);
+DEPLOYED=$(./get-latest.sh $1 -q);
 
-if [[ $LATEST = "" ]] || [[ $DEPLOYED = "" ]]; then
+if [[ $LATEST = "" ]]; then
   if [[ $LATEST = "" ]]; then
     printf "ERROR: Version tags (x.y.z) NOT FOUND.\n";
   fi;
-  if [[ $DEPLOYED = "" ]]; then
-    printf "ERROR: Deployed version tags (x.y.z-$1) NOT FOUND.\n";
-  fi;
-  printf "\nExiting with status code 1.\n"
+  printf "\t>Exiting with status code 1.\n"
   exit 1;
 else
   LATEST_DEPLOYED=$(printf "${DEPLOYED}" | cut -d- -f1);
@@ -24,7 +21,7 @@ else
   printf "LATEST_DEPLOYED:       $LATEST_DEPLOYED\n";
   if [[ $LATEST = $LATEST_DEPLOYED ]]; then
     printf "No changes need to be made.\n"
-    printf "\nExiting with status code 0.\n"
+    printf "\n\tExiting with status code 0.\n"
     exit 1;
   fi;
 fi;

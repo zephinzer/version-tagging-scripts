@@ -8,6 +8,7 @@ the major version, y is the minor version and z is the patch version. exits with
 1 if no version is found, exists with code 0 if version is found.
 
 options:
+\t-q --quiet          : suppresses debug prints
 \t-h --help           : prints this text
 
 usage:
@@ -22,10 +23,26 @@ examples:
 }
 
 if [[ $* == *-h* ]] || [[ $* == *--help* ]]; then help; exit 1; fi;
+if [[ $* == *-q* ]] || [[ $* == *--quiet* ]]; then exec 6>&1; exec > /dev/null; fi;
 
 VERSION_SELECTOR="^[0-9]+\.[0-9]+\.[0-9]+"
-[[ "$1" != "" ]] && VERSION_SELECTOR="${VERSION_SELECTOR}\-${1}";
+printf "\nVERSION_SELECTOR: ${VERSION_SELECTOR}\n";
+[[ "$1" != "" ]] && [[ "$1" != "-q" ]] && VERSION_SELECTOR="${VERSION_SELECTOR}\-${1}";
 VERSION=$(git tag -l | egrep "${VERSION_SELECTOR}$" | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | tail -n 1);
-[[ $VERSION = "" ]] && exit 1;
+if [[ $VERSION = "" ]]; then
+  printf "
+ERROR: could not find a git tag that resembles a semver version (x.y.z).
+\t> To add a 1.0.3 tag, run 'git tag 1.0.3'
+\t> Exiting with status code 1.
+
+";
+  exit 1;
+else
+  printf "VERSION: ";
+fi;
+
+
+if [[ $* == *-q* ]] || [[ $* == *--quiet* ]]; then exec 1>&6 6>&-; fi;
+
 printf "$VERSION\n";
 exit 0;

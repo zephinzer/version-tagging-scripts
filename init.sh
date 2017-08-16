@@ -1,8 +1,8 @@
 #!/bin/sh
 help() { printf "
-******************
-init-versioning.sh
-******************
+*******
+init.sh
+*******
 checks for a semver versioning tag in current git repo. if absent, initializes
 it at 0.0.0. if present, doesn't do anything.
 
@@ -11,7 +11,7 @@ options:
 \t-h --help           : prints this text
 
 usage/example:
-\t./init-versioning.sh -q : runs this script in quiet mode
+\t./init.sh -q : runs this script in quiet mode
 
 ";
 }
@@ -24,8 +24,8 @@ CURRENT_VERSION=$(./get-latest.sh);
 if [[ $? = 1 ]]; then
   git tag ${INITIAL_VERSION};
   printf "
-semver versioning not found from list of git tags...
-initialized repository versioning with 0.0.0.
+!: semver versioning not found from list of git tags...
+\t> initialized repository versioning with 0.0.0.
 
 ";
 else
