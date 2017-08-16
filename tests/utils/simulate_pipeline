@@ -1,0 +1,78 @@
+#!/bin/sh
+[[ $(git branch | egrep '^_dev$') = "_dev" ]] && DEV_EXISTS=1 || DEV_EXISTS=0;
+[[ $(git branch | egrep '^_ci$') = "_ci" ]] && CI_EXISTS=1 || CI_EXISTS=0;
+[[ $(git branch | egrep '^_qa$') = "_qa" ]] && QA_EXISTS=1 || QA_EXISTS=0;
+[[ $(git branch | egrep '^_uat$') = "_uat" ]] && UAT_EXISTS=1 || UAT_EXISTS=0;
+[[ $(git branch | egrep '^_staging$') = "_staging" ]] && STAGING_EXISTS=1 || STAGING_EXISTS=0;
+[[ $(git branch | egrep '^_production$') = "_production" ]] && PRODUCTION_EXISTS=1 || PRODUCTION_EXISTS=0;
+if [[ $DEV_EXISTS = 0 ]] |
+  [[ $CI_EXISTS = 0 ]] |
+  [[ $QA_EXISTS = 0 ]] |
+  [[ $UAT_EXISTS = 0 ]] |
+  [[ $STAGING_EXISTS = 0 ]] |
+  [[ $PRODUCTION_EXISTS = 0 ]]; then
+  printf 'The necessary environments (_dev, _ci, _qa, _uat, _staging, _production) could not be found. Run "branch_setup" before continuing"\n';
+  exit 1;
+fi;
+
+mkdir -p test/data
+
+git checkout _dev;
+echo 'prod' > test/data/prod.flag;
+git add test/data/prod.flag;
+git commit -m 'prod';
+git checkout _ci;
+git rebase _dev;
+git checkout _qa;
+git rebase _ci;
+git checkout _uat;
+git rebase _qa;
+git checkout _staging;
+git rebase _uat;
+git checkout _production;
+git rebase _staging;
+
+git checkout _dev;
+echo 'staging' > test/data/staging.flag;
+git add test/data/staging.flag;
+git commit -m 'staging';
+git checkout _ci;
+git rebase _dev;
+git checkout _qa;
+git rebase _ci;
+git checkout _uat;
+git rebase _qa;
+git checkout _staging;
+git rebase _uat;
+
+git checkout _dev;
+echo 'uat' > test/data/uat.flag;
+git add test/data/uat.flag;
+git commit -m 'uat';
+git checkout _ci;
+git rebase _dev;
+git checkout _qa;
+git rebase _ci;
+git checkout _uat;
+git rebase _qa;
+
+git checkout _dev;
+echo 'qa' > test/data/qa.flag;
+git add test/data/qa.flag;
+git commit -m 'qa';
+git checkout _ci;
+git rebase _dev;
+git checkout _qa;
+git rebase _ci;
+
+git checkout _dev;
+echo 'ci' > test/data/ci.flag;
+git add test/data/ci.flag;
+git commit -m 'ci';
+git checkout _ci;
+git rebase _dev;
+
+git checkout _dev;
+echo 'dev' > test/data/dev.flag;
+git add test/data/dev.flag;
+git commit -m 'dev';

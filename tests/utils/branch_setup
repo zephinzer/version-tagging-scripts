@@ -1,0 +1,7 @@
+#!/bin/sh
+git checkout -b _production
+git checkout -b _staging
+git checkout -b _uat
+git checkout -b _qa
+git checkout -b _ci
+git checkout -b _dev

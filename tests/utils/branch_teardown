@@ -1,0 +1,8 @@
+#!/bin/sh
+git checkout master
+git branch -d _dev
+git branch -d _ci
+git branch -d _qa
+git branch -d _uat
+git branch -d _staging
+git branch -d _production
