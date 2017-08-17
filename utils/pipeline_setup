@@ -20,7 +20,7 @@ mkdir -p _data
 
 git checkout _dev;
 echo 'prod' > ./_data/prod.flag;
-git add ./_data/prod.flag;
+git add -f ./_data/prod.flag;
 git commit -m 'prod';
 git checkout _ci;
 git rebase _dev;
@@ -35,7 +35,7 @@ git rebase _staging;
 
 git checkout _dev;
 echo 'staging' > ./_data/staging.flag;
-git add ./_data/staging.flag;
+git add -f ./_data/staging.flag;
 git commit -m 'staging';
 git checkout _ci;
 git rebase _dev;
@@ -48,7 +48,7 @@ git rebase _uat;
 
 git checkout _dev;
 echo 'uat' > ./_data/uat.flag;
-git add ./_data/uat.flag;
+git add -f ./_data/uat.flag;
 git commit -m 'uat';
 git checkout _ci;
 git rebase _dev;
@@ -59,7 +59,7 @@ git rebase _qa;
 
 git checkout _dev;
 echo 'qa' > ./_data/qa.flag;
-git add ./_data/qa.flag;
+git add -f ./_data/qa.flag;
 git commit -m 'qa';
 git checkout _ci;
 git rebase _dev;
@@ -68,12 +68,12 @@ git rebase _ci;
 
 git checkout _dev;
 echo 'ci' > ./_data/ci.flag;
-git add ./_data/ci.flag;
+git add -f ./_data/ci.flag;
 git commit -m 'ci';
 git checkout _ci;
 git rebase _dev;
 
 git checkout _dev;
 echo 'dev' > ./_data/dev.flag;
-git add ./_data/dev.flag;
+git add -f ./_data/dev.flag;
 git commit -m 'dev';
