@@ -28,7 +28,7 @@ examples:
 }
 
 get_current_version () {
-  GET_LATEST_COMMAND="$(dirname $0)/get-latest -q";
+  GET_LATEST_COMMAND="$(dirname $0)/get-latest -q -m";
   CURRENT_VERSION=$($GET_LATEST_COMMAND);
   if [[ $? != 0 ]]; then
     printf "

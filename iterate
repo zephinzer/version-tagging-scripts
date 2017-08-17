@@ -1,0 +1,74 @@
+#!/bin/sh
+help() { printf "
+*******
+iterate
+*******
+this script gets the latest merged version available in the current branch, ups
+the version number depending on the argument passed in. exits with 0 on successful
+updating, exist with 1 if tag could not be applied for any reason.
+
+versioning has to be in semver for this to work. eg. x.y.z where x is the major
+version, y is the minor version and z is the patch version.
+
+options:
+\t-i --init           : initializes tagging if no version tags could be found
+\t-q --quiet          : suppresses debug prints
+\t-h --help           : prints this text
+
+usage:
+\t./iterate [<version_target>]
+\t\t<version_target>:
+\t\t\t{ major|maj|1 } : ups the major version
+\t\t\t{ minor|min|2 } : ups the minor version
+\t\t\t{ patch|p|3 }   : ups the patch version
+
+";
+}
+
+if [[ $* == *-h* ]] || [[ $* == *--help* ]]; then help; exit 1; fi;
+if [[ $* == *-q* ]] || [[ $* == *--quiet* ]]; then exec 6>&1; exec > /dev/null; fi;
+if [[ $* == *-i* ]] || [[ $* == *--init* ]]; then INIT=1; else INIT=0; fi;
+
+GET_LATEST_COMMAND="$(dirname $0)/get-latest -q -m";
+CURRENT_VERSION=$($GET_LATEST_COMMAND);
+if [[ $? != 0 ]] && [[ $CURRENT_VERSION = "" ]]; then
+if [[ $INIT = 0 ]]; then
+  printf "
+ERROR: Versioning could not be found.
+\tTo initialize it at 0.0.0, pass in parameter -i or --init
+\tExiting with status code 1.
+";
+exit 1;
+else
+INIT_COMMAND="$(dirname $0)/init -q";
+INIT_RETURN=$($INIT_COMMAND)
+if [[ $? != 0 ]]; then
+  printf "
+ERROR: Unknown error happened while initializing version.
+\tYou could add the tag yourself with 'git tag 0.0.0'
+\tExiting with status code 1.
+";
+exit 1;
+fi;
+fi;
+fi;
+
+case $1 in
+  "major"|"maj"|"1")
+    GET_NEXT_COMMAND="$(dirname $0)/get-next major -q";
+  ;;
+  "minor"|"min"|"2")
+    GET_NEXT_COMMAND="$(dirname $0)/get-next minor -q";
+  ;;
+  "patch"|"p"|"3"|*)
+    GET_NEXT_COMMAND="$(dirname $0)/get-next patch -q";
+  ;;
+esac;
+
+NEXT_VERSION=$($GET_NEXT_COMMAND);
+
+CURRENT_BRANCH_COMMAND="$(dirname $0)/get-branch -q";
+CURRENT_BRANCH=$($CURRENT_BRANCH_COMMAND);
+git tag $NEXT_VERSION $CURRENT_BRANCH;
+
+exit 0;
