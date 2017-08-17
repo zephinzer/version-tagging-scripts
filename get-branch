@@ -1,0 +1,36 @@
+#!/bin/sh
+help () { printf "
+**********
+get-branch
+**********
+retrieves the currently checked-out branch
+
+options:
+\t-q --quiet          : suppresses debug prints
+\t-h --help           : prints this text
+
+usage:
+\t./get-branch [...options]
+
+examples:
+\t./get-branch -q
+";
+}
+
+if [[ $* == *-h* ]] || [[ $* == *--help* ]]; then help; exit 1; fi;
+if [[ $* == *-q* ]] || [[ $* == *--quiet* ]]; then exec 6>&1; exec > /dev/null; fi;
+
+GIT_BRANCH=$(stat -q .git);
+if [ "$GIT_BRANCH" = "" ]; then
+  printf "
+ERROR: not a Git repository. Exiting with status code 1.\n
+";
+  exit 1;
+fi;
+
+CURRENT_BRANCH=$(git branch | grep '*' | cut -c 3- | tr -d '\n');
+
+if [[ $* == *-q* ]] || [[ $* == *--quiet* ]]; then exec 1>&6 6>&-; fi;
+
+printf "${CURRENT_BRANCH}\n";
+exit 0;
