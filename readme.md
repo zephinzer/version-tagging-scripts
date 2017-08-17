@@ -103,6 +103,70 @@ Incase you corrupt a runner, you'll need to access the directory containing your
 project builds and manually run `deinit` and change the `.gitmodules` file to direct it
 to the HTTPS version of this repository.
 
+# Play With It
+The `./utils` directory contains some tools to get you started on how this works.
+
+## Setup Branches
+Run the following to set up a traditional CI pipeline consisting of
+`dev`, `ci`, `qa`, `uat`, `staging` and `production` branches/environments:
+
+```bash
+./utils/branch_setup
+```
+
+You should find yourself on the `_dev` branch. They will be prefixed with an underscore
+incase you forget that they are just test example environments.
+
+## Setup Pipeline
+Run the following to add commits to the relevant branches:
+
+```bash
+./utils/pipeline_setup
+```
+
+This will add commits to the environments that simulate an actual pipeline with
+`_production` having only 1 commit and `_dev` having all 6 commits (1 for each
+environment/branch).
+
+## Play With It
+Run `./iterate -q -i` on the `_dev` branch (which you should be on). This will initialize
+the versioning in _dev. Check out the versions available with:
+
+```bash
+git tag -l --merged
+```
+
+There should be `0.0.0` and `0.0.1`. Great.
+
+Now checkout the `_ci` branch and check the branch for tags with:
+
+```bash
+git tag -l --merged
+```
+
+There should be no tags. Now do a rebase from the `_dev` branch into your `_ci` branch:
+
+```bash
+git rebase _dev
+```
+
+Run the tag checking command again:
+
+```bash
+git tag -l --merged
+```
+
+You should now see `0.0.0` and `0.0.1` because the tags associated with the `HEAD`
+commit in the `_dev` branch should have been played to `_ci` and `_ci` now has the
+commits from `_dev`. Verify this yourself with `git log -n 1`. Both should match.
+
+## Enough Games
+Run the following to revert all test/example branches:
+
+```bash
+./utils/branch_teardown
+```
+
 # Inspiration
 We needed a standardised way to add versioning to our packages. The primary way we
 use it internally is in a GitLab environment.
