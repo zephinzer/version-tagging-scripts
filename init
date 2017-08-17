@@ -20,7 +20,8 @@ if [[ $* == *-h* ]] || [[ $* == *--help* ]]; then help; exit 1; fi;
 if [[ $* == *-q* ]] || [[ $* == *--quiet* ]]; then exec 6>&1; exec > /dev/null; fi;
 
 INITIAL_VERSION="0.0.0";
-CURRENT_VERSION=$(./get-latest -q);
+GET_LATEST_COMMAND="$(dirname $0)/get-latest -q";
+CURRENT_VERSION=$($GET_LATEST_COMMAND);
 if [[ $? = 1 ]]; then
   git tag ${INITIAL_VERSION};
   printf "
