@@ -2,6 +2,16 @@
 This package provides scripts that helps with managing semver versioning systems using
 git tagging.
 
+Semver versioning is:
+```
+ X . Y . Z
+ |   |   |-> patch version (bug fixes)
+ |   |-> minor version (backward-compatible changes/additions)
+ |-> major version (backward-compatibility breaking changes)
+```
+
+Read more on semver at: [http://semver.org/](http://semver.org/)
+
 # Recommended Installation
 Use this as a `git` submodule. Install it by running the following in the root of your
 project:
