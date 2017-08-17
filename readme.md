@@ -111,7 +111,15 @@ and will corrupt whichever runner it runs on.
 
 Incase you corrupt a runner, you'll need to access the directory containing your 
 project builds and manually run `deinit` and change the `.gitmodules` file to direct it
-to the HTTPS version of this repository.
+to the HTTPS version of this repository. Main symptom of a corrupt runner will be during
+the fetch/clone phase of a job, you'll see some lines that look like:
+
+```
+Fetching changes...
+fatal: [../]+.git/modules/[./path/you/added/submodule/to] is not a git repository
+```
+
+Or something to that effect. No tests have been run, `before_script` has not run either.
 
 # Play With It
 The `./utils` directory contains some tools to get you started on how this works.
