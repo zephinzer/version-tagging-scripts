@@ -8,6 +8,7 @@ in the git tag list. version should be in format x.y.z where x is the major
 version, y is the minor version and z is the patch version.
 
 options:
+\t-m --merged         : retrieve only from tags that have been merged
 \t-q --quiet          : suppresses debug prints
 \t-h --help           : prints this text
 
@@ -28,7 +29,8 @@ examples:
 }
 
 get_current_version () {
-  GET_LATEST_COMMAND="$(dirname $0)/get-latest -q -m";
+  if [[ $* == *-m* ]] || [[ $* == *--merged* ]]; then MERGE=' -m'; else MERGE=''; fi;
+  GET_LATEST_COMMAND="$(dirname $0)/get-latest -q${MERGE}";
   CURRENT_VERSION=$($GET_LATEST_COMMAND);
   if [[ $? != 0 ]]; then
     printf "
