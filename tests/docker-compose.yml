@@ -1,0 +1,8 @@
+version: '3'
+services:
+  test_it:
+    build: .
+    working_dir: /testpkg
+    command: ./test --start
+    volumes:
+      - ../:/testpkg

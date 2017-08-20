@@ -1,0 +1,22 @@
+#!/bin/sh
+if [[ $* == *-e* ]] || [[ $* == *--evaluate* ]]; then
+  # exits with the number in the results file
+  exit $(cat $2);
+elif [[ $* == *-s* ]] || [[ $* == *--start* ]]; then
+  # entry point for docker test container
+  cd ./tests/scripts;
+  ls | xargs -I{} ../../test --run {};
+elif [[ $* == *-r* ]] || [[ $* == *--run* ]]; then
+  # run script and print exit code to ./tests/results/<filename>
+  echo $PATH;
+  git --version;
+  mkdir -p ../results;
+  chmod +x $(dirname $0)/tests/scripts/$2;
+  sh $(dirname $0)/tests/scripts/$2;
+  printf "$?" > $(dirname $0)/tests/results/$2;
+else
+  # run test container and evaluate results after
+  docker-compose -f ./tests/docker-compose.yml up --build;
+  cd tests/results;
+  ls | xargs -n 1 sh ../../test --evaluate;
+fi;

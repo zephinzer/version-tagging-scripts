@@ -1,0 +1,26 @@
+#!/bin/sh
+cd ../..;
+./utils/branch_setup;
+git checkout _production;
+PRODUCTION_BRANCH=$(./get-branch);
+git checkout _staging;
+STAGING_BRANCH=$(./get-branch);
+git checkout _uat;
+UAT_BRANCH=$(./get-branch);
+git checkout _qa;
+QA_BRANCH=$(./get-branch);
+git checkout _ci;
+CI_BRANCH=$(./get-branch);
+git checkout _dev;
+DEV_BRANCH=$(./get-branch);
+./utils/branch_teardown;
+if [[ $PRODUCTION_BRANCH = "_production" ]] &&
+  [[ $STAGING_BRANCH = "_staging" ]] &&
+  [[ $UAT_BRANCH = "_uat" ]] &&
+  [[ $QA_BRANCH = "_qa" ]] &&
+  [[ $CI_BRANCH = "_ci" ]] &&
+  [[ $DEV_BRANCH = "_dev" ]]; then
+  exit 0;
+else
+  exit 1;
+fi;

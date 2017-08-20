@@ -129,7 +129,7 @@ Run the following to set up a traditional CI pipeline consisting of
 `dev`, `ci`, `qa`, `uat`, `staging` and `production` branches/environments:
 
 ```bash
-./utils/branch_setup
+#> ./utils/branch_setup
 ```
 
 You should find yourself on the `_dev` branch. They will be prefixed with an underscore
@@ -139,7 +139,7 @@ incase you forget that they are just test example environments.
 Run the following to add commits to the relevant branches:
 
 ```bash
-./utils/pipeline_setup
+#> ./utils/pipeline_setup
 ```
 
 This will add commits to the environments that simulate an actual pipeline with
@@ -151,7 +151,7 @@ Run `./iterate -q -i` on the `_dev` branch (which you should be on). This will i
 the versioning in _dev. Check out the versions available with:
 
 ```bash
-git tag -l --merged
+#> git tag -l --merged
 ```
 
 There should be `0.0.0` and `0.0.1`. Great.
@@ -159,19 +159,19 @@ There should be `0.0.0` and `0.0.1`. Great.
 Now checkout the `_ci` branch and check the branch for tags with:
 
 ```bash
-git tag -l --merged
+#> git tag -l --merged
 ```
 
 There should be no tags. Now do a rebase from the `_dev` branch into your `_ci` branch:
 
 ```bash
-git rebase _dev
+#> git rebase _dev
 ```
 
 Run the tag checking command again:
 
 ```bash
-git tag -l --merged
+#> git tag -l --merged
 ```
 
 You should now see `0.0.0` and `0.0.1` because the tags associated with the `HEAD`
@@ -182,12 +182,20 @@ commits from `_dev`. Verify this yourself with `git log -n 1`. Both should match
 Run the following to revert all test/example branches:
 
 ```bash
-./utils/branch_teardown
+#> ./utils/branch_teardown
 ```
 
 # Inspiration
-We needed a standardised way to add versioning to our packages. The primary way we
-use it internally is in a GitLab environment.
+We needed a standardised way to add versioning to our packages. The primary way we use it internally is in a GitLab environment.
+
+# Testing
+We use Docker to test the code so that we can check if certain expected features are available.
+
+Run the tests using:
+
+```
+#> ./test
+```
 
 # Contributing
 Feel it's lacking something? Feel free to submit a Pull Request. Got it to work with
