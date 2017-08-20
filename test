@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 if [[ $* == *-e* ]] || [[ $* == *--evaluate* ]]; then
   # exits with the number in the results file
   printf "evaluating $2... exitted with status code $(cat $2).\n";
