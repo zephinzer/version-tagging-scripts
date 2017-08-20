@@ -19,6 +19,8 @@ elif [[ $* == *-r* ]] || [[ $* == *--run* ]]; then
   printf "CURRENT PATH : ${PATH}\n"
   printf "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
   sh $(dirname $0)/tests/scripts/$2;
+  pwd
+  ls -lA
   printf "$?" > $(dirname $0)/tests/results/$2;
 else
   # run test container and evaluate results after
