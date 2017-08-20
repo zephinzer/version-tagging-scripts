@@ -1,0 +1,34 @@
+#!/bin/sh
+TAG='12345.12345.12345';
+git tag $TAG;
+printf "Added tag '$TAG'";
+EXPECTED_NEXT_MAJOR='12346.12345.12345';
+EXPECTED_NEXT_MINOR='12345.12346.12345';
+EXPECTED_NEXT_PATCH='12345.12345.12346';
+
+printf "Using 'major'... "
+if [[ $(./get-next major -q) != $EXPECTED_NEXT_MAJOR ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+printf "Using 'maj'... "
+if [[ $(./get-next maj -q) != $EXPECTED_NEXT_MAJOR ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+printf "Using 'm1'... "
+if [[ $(./get-next m1 -q) != $EXPECTED_NEXT_MAJOR ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+
+printf "Using 'minor'..."
+if [[ $(./get-next minor -q) != $EXPECTED_NEXT_MINOR ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+printf "Using 'min'..."
+if [[ $(./get-next min -q) != $EXPECTED_NEXT_MINOR ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+printf "Using 'm2'..."
+if [[ $(./get-next m2 -q) != $EXPECTED_NEXT_MINOR ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+
+printf "Using 'patch'..."
+if [[ $(./get-next patch -q) != $EXPECTED_NEXT_PATCH ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+printf "Using 'ptc'..."
+if [[ $(./get-next ptc -q) != $EXPECTED_NEXT_PATCH ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+printf "Using 'p'..."
+if [[ $(./get-next p -q) != $EXPECTED_NEXT_PATCH ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+
+git tag -d 12345.12345.12345;
+[[ $? != 0 ]] && ((ERRORS++));
+
+[[ $ERRORS > 0 ]] && FAILURE=1 || FAILURE=0;
+exit $FAILURE;

@@ -1,28 +1,113 @@
 #!/bin/bash
-if [[ $* == *-e* ]] || [[ $* == *--evaluate* ]]; then
-  # exits with the number in the results file
-  printf "evaluating $2... exitted with status code $(cat $2).\n";
-  exit $(cat $2);
-elif [[ $* == *-s* ]] || [[ $* == *--start* ]]; then
-  # entry point for docker test container
-  echo $PATH;
-  git --version;
+printf_top () {
+  printf "\e[4m                                                                            \e[0m\n";
+}
+
+printf_bottom () {
+  printf "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻\n";
+}
+
+# on ./test [-s/--start] flag
+if [[ $* == *-s* ]] || [[ $* == *--start* ]]; then
+
+  # runs in CONTAINER
+
+  printf_top;
+  printf "PATH: $PATH\n";
+  printf "GIT: $(git --version)\n";
+  printf "USER: $(whoami)\n";
+  printf "TIMESTAMP: $(date +"%a, %d %h %Y %I:%M %p")\n"
+  printf_bottom;
   mkdir -p ../results;
   rm -rf ../results/*.test
   ls tests/scripts | xargs -n 1 -I@ sh -c "$(dirname $0)/test --run @";
+
+# on ./test [-r/--run] flag
 elif [[ $* == *-r* ]] || [[ $* == *--run* ]]; then
-  # run script and print exit code to ./tests/results/<filename>
+
+  # runs in CONTAINER
+
   chmod +x $(dirname $0)/tests/scripts/$2;
-  printf "__________________________________________________________________________\n";
+  printf_top;
   printf "TEST MODULE  : $2\n";
   printf "CURRENT DIR  : $(pwd)\n"
   printf "CURRENT PATH : ${PATH}\n"
-  printf "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
-  sh $(dirname $0)/tests/scripts/$2;
+  printf_bottom;
   mkdir -p $(dirname $0)/tests/results;
+  sh $(dirname $0)/tests/scripts/$2;
   printf "$?" > $(dirname $0)/tests/results/$2;
+
+# on ./test [-e/--evaluate] flag
+elif [[ $* == *-e* ]] || [[ $* == *--evaluate* ]]; then
+
+  # runs on HOST
+  TEST_CASE=$2;
+  printf "Evaluating $TEST_CASE... ";
+
+  STATUS_CODE=$(cat $TEST_CASE);
+  if [[ $STATUS_CODE = 0 ]]; then printf "\033[0;32m"; else printf "\033[0;31m"; fi;
+  printf "Exited with status code $STATUS_CODE\033[0m.\n";
+
+  exit $(cat $TEST_CASE);
+
+# on ./test
 else
-  # run test container and evaluate results after
+
+  # runs on HOST
+
+  printf_top;
+
+  # get current version of scripts, exit if .version cannot be found
+  SCRIPTS_VERSION=$(cat $(dirname $0)/.version);
+  [[ $? != 0 ]] && CORRECT_DIRECTORY=0 || CORRECT_DIRECTORY=1;
+  if [[ $CORRECT_DIRECTORY = 0 ]]; then
+    printf "Error reading version specification. Are you in the right directory?\n";
+    printf "You are in $(pwd).\n";
+    printf_bottom;
+    exit 1;
+  fi;
+  printf "VERSION: $SCRIPTS_VERSION\n";
+
+  # check if Docker is available, exit if not
+  DOCKER_VERSION=$(docker --version);
+  [[ $? != 0 ]] && DOCKER_EXISTS=0 || DOCKER_EXISTS=1;
+  if [[ $DOCKER_EXISTS = 0 ]]; then
+    printf "We use Docker to ensure compliance with our software environments but we";
+    printf "coudln't find a Docker daemon to work with. Go to https://www.docker.com";
+    printf "to download it.\n\n";
+    printf "Quicklinks:\n";
+    printf "\tMAC: https://store.docker.com/editions/community/docker-ce-desktop-mac\n";
+    printf "\tWIN: https://store.docker.com/editions/community/docker-ce-desktop-windows\n"
+    printf_bottom;
+    exit 1;
+  fi;
+  printf "DOCKER VERSION: $DOCKER_VERSION\n";
+
+  # get some diagnostic info on which version we're on
+  COMMIT_SHA=$(git log -n 1 --pretty="%H");
+  [[ $(git status | grep 'Untracked') = "" ]] && UNTRACKED_EXISTS=0 || UNTRACKED_EXISTS=1;
+  [[ $(git status | grep 'modified:') = "" ]] && MODIFIED_EXISTS=0 || MODIFIED_EXISTS=1;
+  if [[ $UNTRACKED_EXISTS = 1 ]] | [[ $MODIFIED_EXISTS = 1 ]]; then
+    COMMIT_SHA="$COMMIT_SHA * modified";
+  fi;
+  printf "COMMIT SHA: $COMMIT_SHA\n";
+  CURRENT_BRANCH=$(git branch | grep "*" | cut -d' ' -f2);  
+  printf "ON BRANCH: $CURRENT_BRANCH\n";
+  printf_bottom;
+
+  # run tests
   docker-compose -f ./tests/docker-compose.yml up --build;
+
+  # print results
+  printf_top;
   ls tests/results | xargs -n 1 -I@ sh -c "$(dirname $0)/test --evaluate tests/results/@";
+  COLLATED_TESTS_RESULT=$?;
+  if [[ $COLLATED_TESTS_RESULT = 0 ]]; then printf "\033[0;32m"; else printf "\033[0;31m"; fi;
+  printf "\nExiting with status code $COLLATED_TESTS_RESULT.\033[0m\n";
+
+  printf_bottom;
+
+  # exit with test results code
+  exit $COLLATED_TESTS_RESULT;
+
 fi;

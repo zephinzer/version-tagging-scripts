@@ -1,0 +1,12 @@
+#!/bin/sh
+ERRORS=0;
+INIT_VALUE="0.0.0";
+
+git tag -l | xargs -n 1 -I@ sh -c "git tag -d @";
+./init;
+[[ $? != 0 ]] && ((ERRORS++));
+[[ $(git tag -l | grep $INIT_VALUE) != $INIT_VALUE ]] && ((ERRORS++));
+git tag -d $INIT_VALUE;
+
+[[ $ERRORS > 0 ]] && FAILURE=1 || FAILURE=0;
+exit $FAILURE;

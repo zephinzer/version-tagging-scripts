@@ -1,0 +1,63 @@
+#!/bin/sh
+ERRORS=0;
+INITIAL_VERSION="123456.123456.123456";
+NEXT_MAJOR_VERSION="123457.123456.123456";
+NEXT_MINOR_VERSION="123456.123457.123456";
+NEXT_PATCH_VERSION="123456.123456.123457";
+
+iterate_with () {
+  git tag $INITIAL_VERSION;
+  ./iterate $1 -q;
+}
+
+teardown () {
+  git tag -d $INITIAL_VERSION >/dev/null;
+  git tag -d $1 >/dev/null;
+}
+
+run_test_and_cleanup_on () {
+  [[ $(git tag -l | grep $1) = "" ]] && printf_fail || printf_success;
+  teardown $1;
+}
+
+printf_fail () {
+  ((ERRORS++));
+  printf "FAILED\n";
+}
+
+printf_success () {
+  printf "SUCCESSFUL\n";
+}
+
+printf "Using 'major': ";
+iterate_with major;
+run_test_and_cleanup_on $NEXT_MAJOR_VERSION;
+printf "Using 'maj': ";
+iterate_with maj;
+run_test_and_cleanup_on $NEXT_MAJOR_VERSION;
+printf "Using '1': ";
+iterate_with 1;
+run_test_and_cleanup_on $NEXT_MAJOR_VERSION;
+
+printf "Using 'minor': ";
+iterate_with minor;
+run_test_and_cleanup_on $NEXT_MINOR_VERSION;
+printf "Using 'min': ";
+iterate_with min;
+run_test_and_cleanup_on $NEXT_MINOR_VERSION;
+printf "Using '2': ";
+iterate_with 2;
+run_test_and_cleanup_on $NEXT_MINOR_VERSION;
+
+printf "Using 'patch': ";
+iterate_with patch;
+run_test_and_cleanup_on $NEXT_PATCH_VERSION;
+printf "Using 'p': ";
+iterate_with p;
+run_test_and_cleanup_on $NEXT_PATCH_VERSION;
+printf "Using '3': ";
+iterate_with 3;
+run_test_and_cleanup_on $NEXT_PATCH_VERSION;
+
+[[ $ERRORS > 0 ]] && FAILURE=1 || FAILURE=0;
+exit $FAILURE;
