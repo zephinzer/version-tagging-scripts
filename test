@@ -4,14 +4,20 @@ if [[ $* == *-e* ]] || [[ $* == *--evaluate* ]]; then
   exit $(cat $2);
 elif [[ $* == *-s* ]] || [[ $* == *--start* ]]; then
   # entry point for docker test container
+  echo $PATH;
+  git --version;
+  mkdir -p ../results;
+  rm -rf ../results/*.test
   cd ./tests/scripts;
   ls | xargs -I{} ../../test --run {};
 elif [[ $* == *-r* ]] || [[ $* == *--run* ]]; then
   # run script and print exit code to ./tests/results/<filename>
-  echo $PATH;
-  git --version;
-  mkdir -p ../results;
   chmod +x $(dirname $0)/tests/scripts/$2;
+  printf "__________________________________________________________________________\n";
+  printf "TEST MODULE  : $2\n";
+  printf "CURRENT DIR  : $(pwd)\n"
+  printf "CURRENT PATH : ${PATH}\n"
+  printf "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
   sh $(dirname $0)/tests/scripts/$2;
   printf "$?" > $(dirname $0)/tests/results/$2;
 else
