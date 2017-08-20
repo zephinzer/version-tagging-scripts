@@ -1,6 +1,6 @@
 # Version Tagging Scripts
 
-
+[![Build Status](https://travis-ci.org/zephinzer/version-tagging-scripts.svg?branch=master)](https://travis-ci.org/zephinzer/version-tagging-scripts)
 
 This package provides scripts that helps with managing semver versioning systems using
 git tagging.
