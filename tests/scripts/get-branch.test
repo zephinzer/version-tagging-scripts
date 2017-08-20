@@ -1,5 +1,4 @@
 #!/bin/sh
-cd ../..;
 ./utils/branch_setup > /dev/null;
 git checkout _production > /dev/null;
 PRODUCTION_BRANCH=$(./get-branch);

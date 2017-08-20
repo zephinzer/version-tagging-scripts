@@ -1,5 +1,4 @@
 #!/bin/sh
-cd ../..;
 # error count, anything more than 1 and we should exit with 1
 ERRORS=0;
 # each test case should alwys be larger than the next so we can automate checking
