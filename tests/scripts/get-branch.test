@@ -1,19 +1,19 @@
 #!/bin/sh
 cd ../..;
-./utils/branch_setup;
-git checkout _production;
+./utils/branch_setup > /dev/null;
+git checkout _production > /dev/null;
 PRODUCTION_BRANCH=$(./get-branch);
-git checkout _staging;
+git checkout _staging > /dev/null;
 STAGING_BRANCH=$(./get-branch);
-git checkout _uat;
+git checkout _uat > /dev/null;
 UAT_BRANCH=$(./get-branch);
-git checkout _qa;
+git checkout _qa > /dev/null;
 QA_BRANCH=$(./get-branch);
-git checkout _ci;
+git checkout _ci > /dev/null;
 CI_BRANCH=$(./get-branch);
-git checkout _dev;
+git checkout _dev > /dev/null;
 DEV_BRANCH=$(./get-branch);
-./utils/branch_teardown;
+./utils/branch_teardown > /dev/null;
 if [[ $PRODUCTION_BRANCH = "_production" ]] &&
   [[ $STAGING_BRANCH = "_staging" ]] &&
   [[ $UAT_BRANCH = "_uat" ]] &&
