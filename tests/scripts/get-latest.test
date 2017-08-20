@@ -26,8 +26,10 @@ test_if_largest () {
   git tag $1;
   TEST_CASE=$(./get-latest -q);
   if [[ $TEST_CASE != $1 ]] | [[ $? != 0 ]]; then
+    printf " : FAILED";
     exit 1;
   fi;
+  printf " : SUCCESSFUL";
 }
 
 teardown () {
