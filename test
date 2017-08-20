@@ -21,10 +21,13 @@ elif [[ $* == *-r* ]] || [[ $* == *--run* ]]; then
   sh $(dirname $0)/tests/scripts/$2;
   pwd
   ls -lA
+  echo $(dirname $0);
+  echo $(dirname $0)/tests/results/$2;
+  ls -lA $(dirname $0);
+  ls -lA $(dirname $0)/tests
   printf "$?" > $(dirname $0)/tests/results/$2;
 else
   # run test container and evaluate results after
   docker-compose -f ./tests/docker-compose.yml up --build;
-  cd tests/results;
-  ls | xargs -n 1 sh ../../test --evaluate;
+  ls tests/results | xargs -n 1 -I@ sh -c "$(dirname $0)/test --evaluate tests/results/@";
 fi;
