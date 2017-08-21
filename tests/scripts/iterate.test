@@ -22,11 +22,11 @@ run_test_and_cleanup_on () {
 
 printf_fail () {
   ((ERRORS++));
-  printf "FAILED\n";
+  printf "\033[0;31mFAILED\033[0m\n";
 }
 
 printf_success () {
-  printf "SUCCESSFUL\n";
+  printf "\033[0;32mSUCCESSFUL\033[0m\n";
 }
 
 printf "Using 'major': ";
@@ -60,4 +60,6 @@ iterate_with 3;
 run_test_and_cleanup_on $NEXT_PATCH_VERSION;
 
 [[ $ERRORS > 0 ]] && FAILURE=1 || FAILURE=0;
+
+printf "\nExiting with status code $FAILURE.\n\n";
 exit $FAILURE;

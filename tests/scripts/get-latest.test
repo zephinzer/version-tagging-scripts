@@ -22,26 +22,32 @@ TEST_CASES="
 "
 
 test_if_largest () {
-  printf "\n\t$1";
+  printf "\t$1 : ";
   git tag $1;
   TEST_CASE=$(./get-latest -q);
   if [[ $TEST_CASE != $1 ]] | [[ $? != 0 ]]; then
-    printf " : FAILED";
+    printf "\033[0;31mFAILED\033[0m\n";
     exit 1;
   fi;
-  printf " : SUCCESSFUL";
+  printf "\033[0;32mSUCCESSFUL\033[0m\n";
 }
 
 teardown () {
-  printf "\n\t$1";
+  printf "\t$1... ";
   git tag -d $1 > /dev/null;
+  if [[ $? != 0 ]]; then
+    printf "\033[0;31mERROR\033[0m\n";
+    exit 1;
+  fi;
+  printf "\033[0;32mOK\033[0m\n";
 }
 
-printf "Processing... ";
+printf "Processing...\n";
 echo $TEST_CASES | xargs -n 1 | xargs -I@ sh -c "$(declare -f test_if_largest); test_if_largest @;";
 [[ $? != 0 ]] && FAILURE=1 || FAILURE=0;
-printf "\n...DONE.\nRemoving... ";
+printf "...DONE.\nRemoving...\n";
 echo $TEST_CASES | xargs -n 1 | xargs -I@ sh -c "$(declare -f teardown); teardown @;";
-printf "\n...DONE.\nExiting with status code $FAILURE.\n\n";
+printf "...DONE.\n";
+printf "\nExiting with status code $FAILURE.\n\n";
 
 exit $FAILURE;

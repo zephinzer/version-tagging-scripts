@@ -1,34 +1,48 @@
 #!/bin/sh
+ERRORS=0;
 TAG='12345.12345.12345';
-git tag $TAG;
-printf "Added tag '$TAG'";
 EXPECTED_NEXT_MAJOR='12346.12345.12345';
 EXPECTED_NEXT_MINOR='12345.12346.12345';
 EXPECTED_NEXT_PATCH='12345.12345.12346';
 
+printf_fail () {
+  ((ERRORS++));
+  printf "\033[0;31mFAILED\033[0m\n";
+}
+
+printf_success () {
+  printf "\033[0;32mSUCCESSFUL\033[0m\n";
+}
+
+git tag $TAG;
+[[ $? != 0 ]] && ((ERRORS++));
+printf "Added tag '$TAG'\n";
+
 printf "Using 'major'... "
-if [[ $(./get-next major -q) != $EXPECTED_NEXT_MAJOR ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+if [[ $(./get-next major -q) != $EXPECTED_NEXT_MAJOR ]]; then printf_fail; else printf_success; fi;
 printf "Using 'maj'... "
-if [[ $(./get-next maj -q) != $EXPECTED_NEXT_MAJOR ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+if [[ $(./get-next maj -q) != $EXPECTED_NEXT_MAJOR ]]; then printf_fail; else printf_success; fi;
 printf "Using 'm1'... "
-if [[ $(./get-next m1 -q) != $EXPECTED_NEXT_MAJOR ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+if [[ $(./get-next m1 -q) != $EXPECTED_NEXT_MAJOR ]]; then printf_fail; else printf_success; fi;
 
 printf "Using 'minor'..."
-if [[ $(./get-next minor -q) != $EXPECTED_NEXT_MINOR ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+if [[ $(./get-next minor -q) != $EXPECTED_NEXT_MINOR ]]; then printf_fail; else printf_success; fi;
 printf "Using 'min'..."
-if [[ $(./get-next min -q) != $EXPECTED_NEXT_MINOR ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+if [[ $(./get-next min -q) != $EXPECTED_NEXT_MINOR ]]; then printf_fail; else printf_success; fi;
 printf "Using 'm2'..."
-if [[ $(./get-next m2 -q) != $EXPECTED_NEXT_MINOR ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+if [[ $(./get-next m2 -q) != $EXPECTED_NEXT_MINOR ]]; then printf_fail; else printf_success; fi;
 
 printf "Using 'patch'..."
-if [[ $(./get-next patch -q) != $EXPECTED_NEXT_PATCH ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+if [[ $(./get-next patch -q) != $EXPECTED_NEXT_PATCH ]]; then printf_fail; else printf_success; fi;
 printf "Using 'ptc'..."
-if [[ $(./get-next ptc -q) != $EXPECTED_NEXT_PATCH ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+if [[ $(./get-next ptc -q) != $EXPECTED_NEXT_PATCH ]]; then printf_fail; else printf_success; fi;
 printf "Using 'p'..."
-if [[ $(./get-next p -q) != $EXPECTED_NEXT_PATCH ]]; then ((ERRORS++)); printf "FAILED\n"; else printf "SUCCESSFUL\n"; fi;
+if [[ $(./get-next p -q) != $EXPECTED_NEXT_PATCH ]]; then printf_fail; else printf_success; fi;
 
-git tag -d 12345.12345.12345;
+git tag -d $TAG;
 [[ $? != 0 ]] && ((ERRORS++));
 
 [[ $ERRORS > 0 ]] && FAILURE=1 || FAILURE=0;
+
+printf "\nExiting with status code $FAILURE.\n\n";
 exit $FAILURE;

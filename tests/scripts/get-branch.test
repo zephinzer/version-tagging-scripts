@@ -1,62 +1,50 @@
 #!/bin/sh
 ERRORS=0;
+
+printf_fail () {
+  ((ERRORS++));
+  printf "\033[0;31mFAILED\033[0m\n";
+}
+
+printf_success () {
+  printf "\033[0;32mSUCCESSFUL\033[0m\n";
+}
+
 ./utils/branch_setup > /dev/null;
 
 git checkout _production > /dev/null;
 PRODUCTION_BRANCH=$(./get-branch);
-if [[ $PRODUCTION_BRANCH = "_production" ]]; then
-  printf " : SUCCESSFUL\n";
-else
-  printf ": FAILED\n";
-  ((ERRORS++));
-fi;
+printf "_production : ";
+[[ $PRODUCTION_BRANCH = "_production" ]] && printf_success || printf_fail;
 
 git checkout _staging > /dev/null;
 STAGING_BRANCH=$(./get-branch);
-if [[ $STAGING_BRANCH = "_staging" ]]; then
-  printf " : SUCCESSFUL\n";
-else
-  printf ": FAILED\n";
-  ((ERRORS++));
-fi;
+printf "_staging : ";
+[[ $STAGING_BRANCH = "_staging" ]] && printf_success || printf_fail;
 
 git checkout _uat > /dev/null;
 UAT_BRANCH=$(./get-branch);
-if [[ $UAT_BRANCH = "_uat" ]]; then
-  printf " : SUCCESSFUL\n";
-else
-  printf ": FAILED\n";
-  ((ERRORS++));
-fi;
+printf "_uat : ";
+[[ $UAT_BRANCH = "_uat" ]] && printf_success || printf_fail;
 
 git checkout _qa > /dev/null;
 QA_BRANCH=$(./get-branch);
-if [[ $QA_BRANCH = "_qa" ]]; then
-  printf " : SUCCESSFUL\n";
-else
-  printf ": FAILED\n";
-  ((ERRORS++));
-fi;
+printf "_qa : ";
+[[ $QA_BRANCH = "_qa" ]] && printf_success || printf_fail;
 
 git checkout _ci > /dev/null;
 CI_BRANCH=$(./get-branch);
-if [[ $CI_BRANCH = "_ci" ]]; then
-  printf " : SUCCESSFUL\n";
-else
-  printf ": FAILED\n";
-  ((ERRORS++));
-fi;
+printf "_ci : ";
+[[ $CI_BRANCH = "_ci" ]] && printf_success || printf_fail;
 
 git checkout _dev > /dev/null;
 DEV_BRANCH=$(./get-branch);
-if [[ $DEV_BRANCH = "_dev" ]]; then
-  printf " : SUCCESSFUL\n";
-else
-  printf ": FAILED\n";
-  ((ERRORS++));
-fi;
+printf "_dev : ";
+[[ $DEV_BRANCH = "_dev" ]] && printf_success || printf_fail;
 
 ./utils/branch_teardown > /dev/null;
 
-[[ $ERRORS > 0 ]] && EXIT_CODE=1 || EXIT_CODE=0;
-exit $EXIT_CODE;
+[[ $ERRORS > 0 ]] && FAILURE=1 || FAILURE=0;
+
+printf "\nExiting with status code $FAILURE.\n\n";
+exit $FAILURE;

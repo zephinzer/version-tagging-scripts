@@ -7,6 +7,14 @@ printf_bottom () {
   printf "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻\n";
 }
 
+printf_fail () {
+  printf "\033[0;31mFAILED\033[0m\n";
+}
+
+printf_success () {
+  printf "\033[0;32mSUCCESSFUL\033[0m\n";
+}
+
 # on ./test [-s/--start] flag
 if [[ $* == *-s* ]] || [[ $* == *--start* ]]; then
 
@@ -18,8 +26,14 @@ if [[ $* == *-s* ]] || [[ $* == *--start* ]]; then
   printf "USER: $(whoami)\n";
   printf "TIMESTAMP: $(date +"%a, %d %h %Y %I:%M %p")\n"
   printf_bottom;
-  mkdir -p ../results;
-  rm -rf ../results/*.test
+
+  TEST_RESULTS_DIRECTORY="$(dirname $0)/tests/results";
+  printf "Creating test results directory... ";
+  mkdir -p $TEST_RESULTS_DIRECTORY;
+  if [[ $? != 0 ]]; then printf_fail; else printf_success; fi;
+  printf "\t> PWD:      $(pwd)\n";
+  printf "\t> REL_PATH: $TEST_RESULTS_DIRECTORY\n";
+  rm -rf $TEST_RESULTS_DIRECTORY/*.test
   ls tests/scripts | xargs -n 1 -I@ sh -c "$(dirname $0)/test --run @";
 
 # on ./test [-r/--run] flag
@@ -33,7 +47,6 @@ elif [[ $* == *-r* ]] || [[ $* == *--run* ]]; then
   printf "CURRENT DIR  : $(pwd)\n"
   printf "CURRENT PATH : ${PATH}\n"
   printf_bottom;
-  mkdir -p $(dirname $0)/tests/results;
   sh $(dirname $0)/tests/scripts/$2;
   printf "$?" > $(dirname $0)/tests/results/$2;
 

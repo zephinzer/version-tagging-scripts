@@ -2,11 +2,24 @@
 ERRORS=0;
 INIT_VALUE="0.0.0";
 
+printf_fail () {
+  ((ERRORS++));
+  printf "\033[0;31mFAILED\033[0m\n";
+}
+
+printf_success () {
+  printf "\033[0;32mSUCCESSFUL\033[0m\n";
+}
+
 git tag -l | xargs -n 1 -I@ sh -c "git tag -d @";
-./init;
-[[ $? != 0 ]] && ((ERRORS++));
-[[ $(git tag -l | grep $INIT_VALUE) != $INIT_VALUE ]] && ((ERRORS++));
+printf "Performing './init -q'... ";
+./init -q;
+if [[ $? != 0 ]]; then printf_fail; else printf_success; fi;
+printf "Checking for tag 0.0.0... ";
+if [[ $(git tag -l | grep $INIT_VALUE) != $INIT_VALUE ]]; then printf_fail; else printf_success; fi;
 git tag -d $INIT_VALUE;
 
 [[ $ERRORS > 0 ]] && FAILURE=1 || FAILURE=0;
+
+printf "\nExiting with status code $FAILURE.\n\n";
 exit $FAILURE;
