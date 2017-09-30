@@ -54,6 +54,7 @@ elif [[ $* == *-r* ]] || [[ $* == *--run* ]]; then
 elif [[ $* == *-e* ]] || [[ $* == *--evaluate* ]]; then
 
   # runs on HOST
+
   TEST_CASE=$2;
   printf "Evaluating $TEST_CASE... ";
 

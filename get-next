@@ -54,15 +54,17 @@ get_next_version () {
   case "$VERSION_TYPE_TO_UPDATE" in
   "major"|"maj"|"m1")
     ((NEXT_MAJOR_VERSION++));
+    NEXT_VERSION="${NEXT_MAJOR_VERSION}.0.0";
     ;;
   "minor"|"min"|"m2")
     ((NEXT_MINOR_VERSION++));
+    NEXT_VERSION="${NEXT_MAJOR_VERSION}.${NEXT_MINOR_VERSION}.0";
     ;;
   "patch"|"ptc"|"p"|*)
     ((NEXT_PATCH_VERSION++));
+    NEXT_VERSION="${NEXT_MAJOR_VERSION}.${NEXT_MINOR_VERSION}.${NEXT_PATCH_VERSION}";
     ;;
   esac
-  NEXT_VERSION="${NEXT_MAJOR_VERSION}.${NEXT_MINOR_VERSION}.${NEXT_PATCH_VERSION}";
 }
 
 if [[ $* == *-h* ]] || [[ $* == *--help* ]]; then help; exit 1; fi;
