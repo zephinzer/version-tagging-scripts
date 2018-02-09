@@ -1,5 +1,5 @@
 {
-  "name": "vtscripts",
+  "name": "@govtechsg/vtscripts",
   "version": "1.0.0",
   "description": "[![Build Status](https://travis-ci.org/zephinzer/version-tagging-scripts.svg?branch=master)](https://travis-ci.org/zephinzer/version-tagging-scripts)",
   "main": "index.js",
