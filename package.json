@@ -1,0 +1,28 @@
+{
+  "name": "vtscripts",
+  "version": "1.0.0",
+  "description": "[![Build Status](https://travis-ci.org/zephinzer/version-tagging-scripts.svg?branch=master)](https://travis-ci.org/zephinzer/version-tagging-scripts)",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "bin": {
+    "vinit": "./init",
+    "vbump": "./iterate",
+    "vlatest": "./get-latest",
+    "vnext": "./get-next"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zephinzer/version-tagging-scripts.git"
+  },
+  "author": "zephinzer - dev-at-joeir-dot-net",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zephinzer/version-tagging-scripts/issues"
+  },
+  "homepage": "https://github.com/zephinzer/version-tagging-scripts#readme"
+}

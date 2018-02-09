@@ -17,8 +17,27 @@ Read more on semver at: [http://semver.org/](http://semver.org/)
 
 
 
-# Recommended Installation
+# Installation
 
+
+
+## NPM 
+
+
+Install this locally using:
+
+```bash
+npm i vtscripts --save-dev
+```
+
+Or globally:
+
+```bash
+npm i -g vtscripts
+```
+
+
+## Git Submodule
 
 
 Use this as a `git` submodule. Install it by running the following in the root of your
@@ -47,7 +66,7 @@ should you not do so. The necessary hashbangs have been added and they are label
 
 
 ## `./iterate`
-
+> When installed via `npm`, this script is available as `vbump`.
 
 The `./iterate` script should be enough for most continuous integration pipelines.
 
@@ -78,19 +97,20 @@ This script outputs the current branch you are on.
 
 
 ## `./get-latest`
-
+> When installed via `npm`, this script is available as `vlatest`.
 
 This script outputs the latest version you are on.
 
 
 ## `./get-next`
+> When installed via `npm`, this script is available as `vnext`.
 
 
 This script outputs the next version you should be migrating to.
 
 
 ## `./init`
-
+> When installed via `npm`, this script is available as `vinit`.
 
 This script checks for the presence of a `git` tag that resembles `x.y.z` where
 `x` is the major version, `y` is the minor version, and `z` is the patch version.
