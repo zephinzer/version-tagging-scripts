@@ -10,23 +10,27 @@ jobs:
   include:
     - stage: test
       script:
-        - docker build ./tests
-        - ./test
+      - docker build ./tests
+      - ./test
     - stage: release
+      only:
+      - master
       script:
-        - git clone -b ${GH_BRANCH} https://${GH_USER}:${GH_TOKEN}@github.com/${GH_REPO}.git tagger
-        - cd tagger
-        - ./iterate patch
-        - git push origin ${GH_BRANCH} --tags
-        - ./get-latest
+      - git clone -b ${GH_BRANCH} https://${GH_USER}:${GH_TOKEN}@github.com/${GH_REPO}.git tagger
+      - cd tagger
+      - ./iterate patch
+      - git push origin ${GH_BRANCH} --tags
+      - ./get-latest
     - stage: publish
+      only:
+      - master
       script:
-        - ./get-latest
-        - docker build -t next .
-        - docker run next
-        - docker login -u ${DH_USERNAME} -p ${DH_PASSWORD}
-        - docker tag next ${DH_REPO}:latest
-        - docker push ${DH_REPO}:latest
-        - docker tag next ${DH_REPO}:$(./get-latest -q)
-        - docker push ${DH_REPO}:$(./get-latest -q)
-        - docker logout
+      - ./get-latest
+      - docker build -t next .
+      - docker run next
+      - docker login -u ${DH_USERNAME} -p ${DH_PASSWORD}
+      - docker tag next ${DH_REPO}:latest
+      - docker push ${DH_REPO}:latest
+      - docker tag next ${DH_REPO}:$(./get-latest -q)
+      - docker push ${DH_REPO}:$(./get-latest -q)
+      - docker logout
