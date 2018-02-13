@@ -16,12 +16,12 @@ jobs:
       script:
         - git clone -b ${GH_BRANCH} https://${GH_USER}:${GH_TOKEN}@github.com/${GH_REPO}.git tagger
         - cd tagger
-        - ls -lA
-        - pwd
-        - ./iterate patch -q
+        - ./iterate patch
         - git push origin ${GH_BRANCH} --tags
+        - ./get-latest
     - stage: publish
       script:
+        - ./get-latest
         - docker build -t next .
         - docker run next
         - docker login -u ${DH_USERNAME} -p ${DH_PASSWORD}
