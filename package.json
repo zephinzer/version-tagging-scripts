@@ -6,12 +6,6 @@
   "directories": {
     "test": "tests"
   },
-  "bin": {
-    "vinit": "./init",
-    "vbump": "./iterate",
-    "vlatest": "./get-latest",
-    "vnext": "./get-next"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
