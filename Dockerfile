@@ -18,4 +18,3 @@ WORKDIR /app
 RUN apk add --no-cache ${INSTALLED_PACKAGES} \
   && printf -- "${ALIASES}" >> ~/.profile
 COPY . /vtscripts
-ENTRYPOINT [ "cat", "/vtscripts/usage.txt" ]

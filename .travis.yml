@@ -15,7 +15,11 @@ jobs:
     - stage: release
       script:
         - git clone -b ${GH_BRANCH} https://${GH_USER}:${GH_TOKEN}@github.com/${GH_REPO}.git tagger
-        - cd tagger && ./iterate patch -q && git push origin ${GH_BRANCH} --tags
+        - cd tagger
+        - ls -lA
+        - pwd
+        - ./iterate patch -q
+        - git push origin ${GH_BRANCH} --tags
     - stage: publish
       script:
         - docker build -t next .
