@@ -1,0 +1,15 @@
+zephinzer/vtscripts
+  run:
+    command [options] [flags]
+  command:
+    v-get-branch : retrieves the current branch
+    v-get-latest : retrieves the latest semver git tag
+    v-get-next   : retrieves the next semver git tag
+    v-init       : initialises a git repository with semver git tags
+    v-iterate    : bumps the current semver git tag
+  options:
+    patch        : next patch version (*default*)
+    minor        : next minor version
+    major        : next major version
+  flags:
+    -q           : quiet mode
