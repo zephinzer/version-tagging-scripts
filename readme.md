@@ -65,9 +65,51 @@ should you not do so. The necessary hashbangs have been added and they are label
 `#!/bin/sh`. 
 
 
-## `./iterate`
-> When installed via `npm`, this script is available as `vbump`.
 
+## Call from Docker Container
+
+
+
+It is possible to use the published Docker container to iterate a version. To do this, pull the image first:
+
+```bash
+docker pull zephinzer/vtscripts:latest
+```
+
+Verify the iamge has been pulled from Docker Hub:
+
+```bash
+docker images | grep vtscripts
+```
+
+A single line of output should appear:
+
+```
+zephinzer/vtscripts                    latest                                         xxxxxxxxxxxx        2 weeks ago         48.2MB
+```
+
+Run the container, binding your current directory into the container, and append the required command behind a `docker run`:
+
+```bash
+docker run -v "$(pwd):/app" zephinzer/vtscripts:latest <COMMAND> [options]
+```
+
+When calling from a container, remove the `./` prefix from the command list.
+
+
+## Calling from Host
+
+
+
+To call from host, add this repository as a Git submodule and call the scripts as follows.
+
+
+
+## Commands
+
+
+
+### `./iterate`
 The `./iterate` script should be enough for most continuous integration pipelines.
 
 Run it anywhere in your pipeline that you need to up the version number.
@@ -90,28 +132,21 @@ To up the `major` version, use:
 ./path/you/put/it/iterate major -q -i
 ```
 
-## `./get-branch`
+### `./get-branch`
 
 
 This script outputs the current branch you are on.
 
 
-## `./get-latest`
-> When installed via `npm`, this script is available as `vlatest`.
-
+### `./get-latest`
 This script outputs the latest version you are on.
 
 
-## `./get-next`
-> When installed via `npm`, this script is available as `vnext`.
-
-
+### `./get-next`
 This script outputs the next version you should be migrating to.
 
 
-## `./init`
-> When installed via `npm`, this script is available as `vinit`.
-
+### `./init`
 This script checks for the presence of a `git` tag that resembles `x.y.z` where
 `x` is the major version, `y` is the minor version, and `z` is the patch version.
 Should it fail to find such a git tag, it will initialize by adding a global
