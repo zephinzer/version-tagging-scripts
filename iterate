@@ -32,9 +32,9 @@ if [[ $* == *-i* ]] || [[ $* == *--init* ]]; then INIT=1; else INIT=0; fi;
 if [[ $* == *-m* ]] || [[ $* == *--merged* ]]; then MERGE=' -m'; else MERGE=''; fi;
 
 GET_LATEST_COMMAND="$(dirname $0)/get-latest -q${MERGE}";
-CURRENT_VERSION=$($GET_LATEST_COMMAND);
-if [[ $? != 0 ]] && [[ $CURRENT_VERSION = "" ]]; then
-if [[ $INIT = 0 ]]; then
+CURRENT_VERSION="$($GET_LATEST_COMMAND)";
+if [[ "$?" != "0" ]] && [[ "${CURRENT_VERSION}" = "" ]]; then
+if [[ "${INIT}" = "0" ]]; then
   printf "
 ERROR: Versioning could not be found.
 \tTo initialize it at 0.0.0, pass in parameter -i or --init
@@ -44,7 +44,7 @@ exit 1;
 else
 INIT_COMMAND="$(dirname $0)/init -q";
 INIT_RETURN=$($INIT_COMMAND)
-if [[ $? != 0 ]]; then
+if [[ "$?" != "0" ]]; then
   printf "
 ERROR: Unknown error happened while initializing version.
 \tYou could add the tag yourself with 'git tag 0.0.0'
@@ -67,10 +67,12 @@ case $1 in
   ;;
 esac;
 
-NEXT_VERSION=$($GET_NEXT_COMMAND);
+NEXT_VERSION="$($GET_NEXT_COMMAND)";
 
 CURRENT_BRANCH_COMMAND="$(dirname $0)/get-branch -q";
-CURRENT_BRANCH=$($CURRENT_BRANCH_COMMAND);
-git tag $NEXT_VERSION $CURRENT_BRANCH;
+CURRENT_BRANCH="$($CURRENT_BRANCH_COMMAND)";
+printf -- "NEXT_VERSION: ${NEXT_VERSION}\n";
+printf -- "CURRENT_BRANCH: ${CURRENT_BRANCH}\n";
+git tag "${NEXT_VERSION}" "${CURRENT_BRANCH}";
 
 exit 0;
