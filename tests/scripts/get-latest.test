@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # error count, anything more than 1 and we should exit with 1
 ERRORS=0;
 # each test case should alwys be larger than the next so we can automate checking
@@ -21,32 +21,11 @@ TEST_CASES="
 10000.100.99
 "
 
-test_if_largest () {
-  printf "\t$1 : ";
-  git tag $1;
-  TEST_CASE=$(./get-latest -q);
-  if [[ $TEST_CASE != $1 ]] | [[ $? != 0 ]]; then
-    printf "\033[0;31mFAILED\033[0m\n";
-    exit 1;
-  fi;
-  printf "\033[0;32mSUCCESSFUL\033[0m\n";
-}
-
-teardown () {
-  printf "\t$1... ";
-  git tag -d $1 > /dev/null;
-  if [[ $? != 0 ]]; then
-    printf "\033[0;31mERROR\033[0m\n";
-    exit 1;
-  fi;
-  printf "\033[0;32mOK\033[0m\n";
-}
-
 printf "Processing...\n";
-echo $TEST_CASES | xargs -n 1 | xargs -I@ sh -c "$(declare -f test_if_largest); test_if_largest @;";
+echo $TEST_CASES | xargs -n 1 | xargs -I@ bash -c '$(pwd)/tests/scripts/utils.get-latest.test-if-largest @';
 [[ $? != 0 ]] && FAILURE=1 || FAILURE=0;
 printf "...DONE.\nRemoving...\n";
-echo $TEST_CASES | xargs -n 1 | xargs -I@ sh -c "$(declare -f teardown); teardown @;";
+echo $TEST_CASES | xargs -n 1 | xargs -I@ bash -c '$(pwd)/tests/scripts/utils.get-latest.teardown @';
 printf "...DONE.\n";
 printf "\nExiting with status code $FAILURE.\n\n";
 

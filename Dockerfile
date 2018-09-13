@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:3.8
 LABEL author="zephinzer <dev-at-joeir-dot-net>" \
   description="Docker image for use with CI/CD pipelines to perform version bumping"
 ENV INSTALLED_PACKAGES="bash curl git vim jq"

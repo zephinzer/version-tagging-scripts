@@ -1,0 +1,8 @@
+#!/bin/bash
+printf "\t$1... ";
+git tag -d $1 > /dev/null;
+if [[ $? != 0 ]]; then
+  printf "\033[0;31mERROR\033[0m\n";
+  exit 1;
+fi;
+printf "\033[0;32mOK\033[0m\n";

@@ -8,29 +8,26 @@ stages:
   - publish
 jobs:
   include:
-    - stage: test
-      script:
-      - docker build ./tests
-      - ./test
-    - stage: release
-      only:
-      - master
-      script:
-      - git clone -b ${GH_BRANCH} https://${GH_USER}:${GH_TOKEN}@github.com/${GH_REPO}.git tagger
-      - cd tagger
-      - ./iterate patch
-      - git push origin ${GH_BRANCH} --tags
-      - ./get-latest
-    - stage: publish
-      only:
-      - master
-      script:
-      - ./get-latest
-      - docker build -t next .
-      - docker run next
-      - docker login -u ${DH_USERNAME} -p ${DH_PASSWORD}
-      - docker tag next ${DH_REPO}:latest
-      - docker push ${DH_REPO}:latest
-      - docker tag next ${DH_REPO}:$(./get-latest -q)
-      - docker push ${DH_REPO}:$(./get-latest -q)
-      - docker logout
+  - stage: test
+    script:
+    - 'printf -- "DOCKERUSER=${DH_NAMESPACE}\nDOCKERIMAGE=${DH_IMAGE}\nDOCKERREGISTRY=${DH_REGISTRY}\n" > ./Makefile.properties'
+    - make test
+  - stage: release
+    only:
+    - master
+    script:
+    - 'printf -- "DOCKERUSER=${DH_NAMESPACE}\nDOCKERIMAGE=${DH_IMAGE}\nDOCKERREGISTRY=${DH_REGISTRY}\n" > ./Makefile.properties'
+    - git clone -b ${GH_BRANCH} https://${GH_USER}:${GH_TOKEN}@github.com/${GH_REPO}.git tagger
+    - cd tagger
+    - ./iterate patch
+    - git push origin ${GH_BRANCH} --tags
+    - ./get-latest
+  - stage: publish
+    only:
+    - master
+    script:
+    - 'printf -- "DOCKERUSER=${DH_NAMESPACE}\nDOCKERIMAGE=${DH_IMAGE}\nDOCKERREGISTRY=${DH_REGISTRY}\n" > ./Makefile.properties'
+    - ./get-latest
+    - docker login -u ${DH_USERNAME} -p ${DH_PASSWORD}
+    - make publish
+    - docker logout

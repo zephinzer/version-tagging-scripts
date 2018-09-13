@@ -1,0 +1,9 @@
+#!/bin/bash
+printf "\t$1 : ";
+git tag $1;
+TEST_CASE=$(./get-latest -q);
+if [[ $TEST_CASE != $1 ]] | [[ $? != 0 ]]; then
+  printf "\033[0;31mFAILED\033[0m\n";
+  exit 1;
+fi;
+printf "\033[0;32mSUCCESSFUL\033[0m\n";

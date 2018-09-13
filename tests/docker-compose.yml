@@ -3,6 +3,6 @@ services:
   test_it:
     build: .
     working_dir: /testpkg
-    command: ./test --start
+    command: ./tests/entrypoint.sh --start
     volumes:
       - ../:/testpkg

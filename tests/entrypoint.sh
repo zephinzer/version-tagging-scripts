@@ -1,4 +1,7 @@
 #!/bin/bash
+
+CURRDIR=$(dirname $0);
+
 printf_top () {
   printf "\e[4m                                                                            \e[0m\n";
 }
@@ -27,28 +30,28 @@ if [[ $* == *-s* ]] || [[ $* == *--start* ]]; then
   printf "TIMESTAMP: $(date +"%a, %d %h %Y %I:%M %p")\n"
   printf_bottom;
 
-  TEST_RESULTS_DIRECTORY="$(dirname $0)/tests/results";
+  TEST_RESULTS_DIRECTORY="${CURRDIR}/results";
   printf "Creating test results directory... ";
   mkdir -p $TEST_RESULTS_DIRECTORY;
   if [[ $? != 0 ]]; then printf_fail; else printf_success; fi;
   printf "\t> PWD:      $(pwd)\n";
   printf "\t> REL_PATH: $TEST_RESULTS_DIRECTORY\n";
-  rm -rf $TEST_RESULTS_DIRECTORY/*.test
-  ls tests/scripts | xargs -n 1 -I@ sh -c "$(dirname $0)/test --run @";
+  rm -rf $TEST_RESULTS_DIRECTORY/*.test;
+  ls ${CURRDIR}/scripts/ | egrep '\.test$' | xargs -n 1 -I@ sh -c "${CURRDIR}/entrypoint.sh --run @";
 
 # on ./test [-r/--run] flag
 elif [[ $* == *-r* ]] || [[ $* == *--run* ]]; then
 
   # runs in CONTAINER
 
-  chmod +x $(dirname $0)/tests/scripts/$2;
+  chmod +x ${CURRDIR}/scripts/$2;
   printf_top;
   printf "TEST MODULE  : $2\n";
   printf "CURRENT DIR  : $(pwd)\n"
   printf "CURRENT PATH : ${PATH}\n"
   printf_bottom;
-  sh $(dirname $0)/tests/scripts/$2;
-  printf "$?" > $(dirname $0)/tests/results/$2;
+  bash ${CURRDIR}/scripts/$2;
+  printf "$?" > ${CURRDIR}/results/$2;
 
 # on ./test [-e/--evaluate] flag
 elif [[ $* == *-e* ]] || [[ $* == *--evaluate* ]]; then
@@ -72,7 +75,7 @@ else
   printf_top;
 
   # get current version of scripts, exit if .version cannot be found
-  SCRIPTS_VERSION=$(cat $(dirname $0)/.version);
+  SCRIPTS_VERSION=$(cat ${CURRDIR}/../.version);
   [[ $? != 0 ]] && CORRECT_DIRECTORY=0 || CORRECT_DIRECTORY=1;
   if [[ $CORRECT_DIRECTORY = 0 ]]; then
     printf "Error reading version specification. Are you in the right directory?\n";
@@ -110,11 +113,11 @@ else
   printf_bottom;
 
   # run tests
-  docker-compose -f ./tests/docker-compose.yml up --build;
+  docker-compose -f "${CURRDIR}/docker-compose.yml" up --build;
 
   # print results
   printf_top;
-  ls tests/results | xargs -n 1 -I@ sh -c "$(dirname $0)/test --evaluate tests/results/@";
+  ls ${CURRDIR}/results | egrep '\.test$' | xargs -n 1 -I@ sh -c "${CURRDIR}/entrypoint.sh --evaluate ${CURRDIR}/results/@";
   COLLATED_TESTS_RESULT=$?;
   if [[ $COLLATED_TESTS_RESULT = 0 ]]; then printf "\033[0;32m"; else printf "\033[0;31m"; fi;
   printf "\nExiting with status code $COLLATED_TESTS_RESULT.\033[0m\n";
