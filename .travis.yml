@@ -13,18 +13,16 @@ jobs:
     - 'printf -- "DOCKERUSER=${DH_NAMESPACE}\nDOCKERIMAGE=${DH_IMAGE}\nDOCKERREGISTRY=${DH_REGISTRY}\n" > ./Makefile.properties'
     - make test
   - stage: release
-    only:
-    - master
+    if: branch = master
     script:
     - 'printf -- "DOCKERUSER=${DH_NAMESPACE}\nDOCKERIMAGE=${DH_IMAGE}\nDOCKERREGISTRY=${DH_REGISTRY}\n" > ./Makefile.properties'
     - git clone -b ${GH_BRANCH} https://${GH_USER}:${GH_TOKEN}@github.com/${GH_REPO}.git tagger
     - cd tagger
     - ./iterate patch
+    - git commit --allow-empty -m '[skip ci] publishing $(./get-latest)'
     - git push origin ${GH_BRANCH} --tags
-    - ./get-latest
   - stage: publish
-    only:
-    - master
+    if: branch = master
     script:
     - 'printf -- "DOCKERUSER=${DH_NAMESPACE}\nDOCKERIMAGE=${DH_IMAGE}\nDOCKERREGISTRY=${DH_REGISTRY}\n" > ./Makefile.properties'
     - ./get-latest
