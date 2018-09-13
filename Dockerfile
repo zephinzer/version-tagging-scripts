@@ -1,4 +1,5 @@
-FROM alpine:3.8
+ARG VERSION_ALPINE=3.7
+FROM alpine:${VERSION_ALPINE}
 LABEL author="zephinzer <dev-at-joeir-dot-net>" \
   description="Docker image for use with CI/CD pipelines to perform version bumping"
 ENV INSTALLED_PACKAGES="bash curl git vim jq"
